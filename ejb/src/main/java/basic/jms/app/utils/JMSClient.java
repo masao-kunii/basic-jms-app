@@ -25,16 +25,25 @@ public class JMSClient {
 		log.fine("JMSClient#send " + text);
 		final long start = System.currentTimeMillis();
 		Connection connection = null;
+		Session session = null;
 		try {
 			connection = connectionFactory.createConnection();
-			Session session = connection.createSession(true, -1);
+			session = connection.createSession(true, -1);
 			Queue queue = session.createQueue(queueName);
 			TextMessage message = session.createTextMessage();
 			message.setText(text);
 			message.setLongProperty("timestamp", System.currentTimeMillis());
 			MessageProducer producer = session.createProducer(queue);
 			producer.send(message);
+			session.commit();
 		} catch (Exception e) {
+			if(session != null){
+				try {
+					session.rollback();
+				} catch (JMSException ex) {
+					ex.printStackTrace();
+				}
+			}
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}finally{
@@ -43,7 +52,6 @@ public class JMSClient {
 					connection.close();
 				} catch (JMSException e) {
 					e.printStackTrace();
-					throw e;
 				}
 			}
 		}	

@@ -33,7 +33,8 @@ public class JmsRestResourceTest {
         .addPackages(true, "basic.jms.app")
         .addAsWebInfResource(new File("src/main/webapp/WEB-INF/web.xml"))
         .addAsResource(EmptyAsset.INSTANCE, "META-INF/beans.xml")
-        .addAsManifestResource("test-ds.xml");
+        .addAsResource("persistence.xml", "META-INF/persistence.xml")
+        .addAsManifestResource("basic-jms-app-ds.xml");
 //     System.out.println(archive.toString(true));
     return archive;
   }

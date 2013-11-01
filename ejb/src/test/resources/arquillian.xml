@@ -21,7 +21,7 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
 	<engine>
-		<property name="deploymentExportPath">./</property>
+		<property name="deploymentExportPath">./target/arquillian</property>
 	</engine>
 
 	<container qualifier="JBOSS_EAP_MANAGED_6.X"

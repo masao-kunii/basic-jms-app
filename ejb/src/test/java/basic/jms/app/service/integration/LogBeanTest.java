@@ -27,7 +27,7 @@ public class LogBeanTest {
     return ShrinkWrap.create(JavaArchive.class, "logtest.jar")
         .addClasses(LogBean.class)
         .addPackage("basic.jms.app.model")
-        .addAsResource("app-ds.xml", "META-INF/app-ds.xml")
+        .addAsResource("basic-jms-app-ds.xml", "META-INF/basic-jms-app-ds.xml")
         .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
         .addAsResource("META-INF/beans.xml", "META-INF/beans.xml");
   }

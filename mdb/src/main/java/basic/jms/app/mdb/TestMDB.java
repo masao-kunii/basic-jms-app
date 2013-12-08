@@ -15,7 +15,7 @@ import javax.inject.Named;
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
 		@ActivationConfigProperty(propertyName = "destination", propertyValue = "java:jboss/activemq/queue/TestQueue") })
-@ResourceAdapter("activemq.rar")
+@ResourceAdapter("activemq-rar")
 public class TestMDB extends AbstractMDB {
 	@Inject
 	@Named("produceLog")

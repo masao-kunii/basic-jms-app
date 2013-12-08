@@ -2,8 +2,10 @@ package basic.jms.app.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -18,8 +20,11 @@ import basic.jms.app.model.Log;
 public class LogBean {
   @PersistenceContext(unitName = "default")
   private EntityManager em;
+  @Inject
+  private Logger log;
 
   public Log insert(String text) {
+	log.fine(String.format("insert message\"%s\" to the log table.", text));
     Log entity = new Log();
     entity.setText(text);
     entity.setEntryDate(new Date());

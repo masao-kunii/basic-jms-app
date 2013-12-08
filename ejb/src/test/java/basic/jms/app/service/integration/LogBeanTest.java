@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 
 import basic.jms.app.model.Log;
 import basic.jms.app.service.LogBean;
+import basic.jms.app.utils.Resources;
 
 @RunWith(Arquillian.class)
 public class LogBeanTest {
@@ -25,7 +26,7 @@ public class LogBeanTest {
   @Deployment(name = "logtest.jar", managed = true)
   public static JavaArchive createDeployment() {
     return ShrinkWrap.create(JavaArchive.class, "logtest.jar")
-        .addClasses(LogBean.class)
+        .addClasses(LogBean.class, Resources.class)
         .addPackage("basic.jms.app.model")
         .addAsResource("basic-jms-app-ds.xml", "META-INF/basic-jms-app-ds.xml")
         .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")

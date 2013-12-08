@@ -1,0 +1,9 @@
+<jboss-deployment-structure>
+	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+	<sub-deployment name="basic-jms-app-web.war">
+		<dependencies>
+			<module name="deployment.basic-jms-app-ear.ear.basic-jms-app-ejb.jar" />
+		</dependencies>
+	</sub-deployment>
+</jboss-deployment-structure>
+

@@ -18,7 +18,8 @@ public class JMSClient {
 	@Inject
 	private Logger log;
 	
-	@Resource(lookup="java:jboss/activemq/QueueConnectionFactory")
+//	@Resource(lookup="java:jboss/activemq/QueueConnectionFactory")
+	@Resource(lookup="java:/activemq/cp/QueueConnectionFactory")
 	private ConnectionFactory connectionFactory;
 	
 	public void sendText(String queueName, String text) throws JMSException {

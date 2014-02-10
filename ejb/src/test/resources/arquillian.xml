@@ -27,7 +27,7 @@
 	<container qualifier="JBOSS_EAP_MANAGED_6.X"
 		mode="suite" default="true">
 		<configuration>
-			<property name="jbossHome">C:/jboss/bin/jboss-eap-6.1.1</property>
+			<property name="jbossHome">C:/opt/jboss/bin/jboss-eap-6.1.1</property>
 		</configuration>
 	</container>
 </arquillian>

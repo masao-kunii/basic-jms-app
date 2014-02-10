@@ -22,4 +22,10 @@ public interface IJmsRestResource {
 //	@Produces("application/json")
 	public Response sendlargemessage(@PathParam("queueName") String queueName,
 			@FormParam("message") String message);
+
+	@GET
+	@Path("/send/{queueName}/{timeout}/{retry}")
+	@Produces("application/json")
+	public Response send(@PathParam("queueName") String queueName,
+			@PathParam("timeout") long timeout, @PathParam("retry") int retry);
 }

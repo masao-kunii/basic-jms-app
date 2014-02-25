@@ -3,6 +3,7 @@ package basic.jms.app.utils;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
@@ -17,6 +18,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.naming.InitialContext;
 
 @Named
 public class JMSClient {
@@ -24,11 +26,12 @@ public class JMSClient {
 	private Logger log;
 	
 //	@Resource(lookup="java:jboss/activemq/QueueConnectionFactory")
-	@Resource(lookup="java:/activemq/QueueConnectionFactory")
+//	@Resource(lookup="java:/activemq/QueueConnectionFactory")
+	@Resource(lookup="java:/jms/cp/QueueConnectionFactory")
 	private ConnectionFactory connectionFactory;
 	
 	public void sendText(String queueName, String text, Map<String, Object> prop) throws JMSException {
-		log.fine("JMSClient#send " + text);
+		log.info("JMSClient#send " + text);
 		final long start = System.currentTimeMillis();
 		Connection connection = null;
 		Session session = null;
@@ -67,24 +70,49 @@ public class JMSClient {
 				}
 			}
 		}	
-		log.fine("JMSClient#send[" + (System.currentTimeMillis() - start) + "ms]");
+		log.info("JMSClient#send[" + (System.currentTimeMillis() - start) + "ms]");
 	}
 	public void sendText(String queueName, String text) throws JMSException {
-		log.fine("JMSClient#send " + text);
+		log.info("JMSClient#send " + text);
 		final long start = System.currentTimeMillis();
 		Connection connection = null;
 		Session session = null;
 		try {
 			connection = connectionFactory.createConnection();
+			log.fine("connection " + connection);
 			connection.start();
 			session = connection.createSession(true, -1);
+			log.fine("session " + session);
 			Queue queue = session.createQueue(queueName);
+
+			try{
+			InitialContext jndi = new InitialContext();
+			Queue jndiqueue = (Queue)jndi.lookup("java:/jms/queues/" + queueName);
+			if(jndiqueue != null){
+				queue = jndiqueue;
+			}
+			}catch(Exception e){
+			}
+			
+			log.fine("queue " + queue);
 			TextMessage message = session.createTextMessage();
 			message.setText(text);
 			message.setLongProperty("timestamp", System.currentTimeMillis());
+			log.fine("message " + message);
 			MessageProducer producer = session.createProducer(queue);
+			log.fine("producer " + producer);
 			producer.send(message);
+			log.fine("sent");
 			session.commit();
+			log.fine("committed");
+
+			try{
+				if(text.matches("b[0-9]*")){
+					TimeUnit.SECONDS.sleep(Long.parseLong(text.substring(1)));
+				}
+			}catch(Exception e){
+			}
+
 		} catch (Exception e) {
 			if(session != null){
 				try {
@@ -96,6 +124,7 @@ public class JMSClient {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}finally{
+			log.fine("JMSClient#closing the connection");
 			if(connection != null){
 				try {
 					connection.stop();
@@ -104,8 +133,15 @@ public class JMSClient {
 					e.printStackTrace();
 				}
 			}
+			log.fine("JMSClient#closed");
 		}	
-		log.fine("JMSClient#send[" + (System.currentTimeMillis() - start) + "ms]");
+		try{
+			if(text.matches("a[0-9]*")){
+				TimeUnit.SECONDS.sleep(Long.parseLong(text.substring(1)));
+			}
+		}catch(Exception e){
+		}
+		log.info("JMSClient#sent in [" + (System.currentTimeMillis() - start) + "ms]");
 	}
 	public Message receive(String queueName, long timeout) throws JMSException {
 		log.info("JMSClient#receive from " + queueName);
@@ -154,7 +190,8 @@ public class JMSClient {
 				}
 			}
 		}	
-		log.info("JMSClient#received[" + (System.currentTimeMillis() - start) + "ms]");
+		log.info("JMSClient#received in [" + (System.currentTimeMillis() - start) + "ms]");
 		return message;
 	}
+	
 }
